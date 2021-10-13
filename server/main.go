@@ -10,8 +10,8 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 	"os"
-	"sync"
 	"strconv"
+	"sync"
 	"time"
 
 	"golang.org/x/crypto/pbkdf2"
@@ -393,6 +393,21 @@ func main() {
 					config.SockBuf = sockbuf
 				}
 			}
+			if c, b := opts.Get("smuxbuf"); b {
+				if smuxbuf, err := strconv.Atoi(c); err == nil {
+					config.SmuxBuf = smuxbuf
+				}
+			}
+			if c, b := opts.Get("streambuf"); b {
+				if streambuf, err := strconv.Atoi(c); err == nil {
+					config.StreamBuf = streambuf
+				}
+			}
+			if c, b := opts.Get("smuxver"); b {
+				if smuxver, err := strconv.Atoi(c); err == nil {
+					config.SmuxVer = smuxver
+				}
+			}
 			if c, b := opts.Get("keepalive"); b {
 				if keepalive, err := strconv.Atoi(c); err == nil {
 					config.KeepAlive = keepalive
@@ -417,6 +432,11 @@ func main() {
 			if c, b := opts.Get("quiet"); b {
 				if quiet, err := strconv.ParseBool(c); err == nil {
 					config.Quiet = quiet
+				}
+			}
+			if c, b := opts.Get("tcp"); b {
+				if tcp, err := strconv.ParseBool(c); err == nil {
+					config.TCP = tcp
 				}
 			}
 		}
