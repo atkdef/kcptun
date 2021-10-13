@@ -27,8 +27,9 @@ const (
 	maxSmuxVer = 2
 	// stream copy buffer size
 	bufSize = 4096
-	VpnMode = false
 )
+
+var VpnMode = false
 
 // VERSION is injected by buildflags
 var VERSION = "SELFBUILD"
@@ -245,11 +246,11 @@ func main() {
 			Value: "", // when the value is not empty, the config path must exists
 			Usage: "config from json file, which will override the command from shell",
 		},
-		&cli.BoolFlag{
+		cli.BoolFlag{
 			Name:  "fast-open",
 			Usage: "Dummy flag, doesn't really do anything",
 		},
-		&cli.BoolFlag{
+		cli.BoolFlag{
 			Name:  "V",
 			Usage: "Enable VPN mode for shadowsocks-android",
 		},
@@ -391,6 +392,21 @@ func main() {
 					config.SockBuf = sockbuf
 				}
 			}
+			if c, b := opts.Get("smuxbuf"); b {
+				if smuxbuf, err := strconv.Atoi(c); err == nil {
+					config.SmuxBuf = smuxbuf
+				}
+			}
+			if c, b := opts.Get("streambuf"); b {
+				if streambuf, err := strconv.Atoi(c); err == nil {
+					config.StreamBuf = streambuf
+				}
+			}
+			if c, b := opts.Get("smuxver"); b {
+				if smuxver, err := strconv.Atoi(c); err == nil {
+					config.SmuxVer = smuxver
+				}
+			}
 			if c, b := opts.Get("keepalive"); b {
 				if keepalive, err := strconv.Atoi(c); err == nil {
 					config.KeepAlive = keepalive
@@ -412,8 +428,14 @@ func main() {
 					config.Quiet = quiet
 				}
 			}
+			if c, b := opts.Get("tcp"); b {
+				if tcp, err := strconv.ParseBool(c); err == nil {
+					config.TCP = tcp
+				}
+			}
 			if _, b := opts.Get("__android_vpn"); b {
 				config.Vpn = true
+				VpnMode = config.Vpn
 			}
 		}
 
@@ -467,6 +489,8 @@ func main() {
 		log.Println("quiet:", config.Quiet)
 		log.Println("tcp:", config.TCP)
 		log.Println("vpn:", config.Vpn)
+
+		VpnMode = config.Vpn
 
 		// parameters check
 		if config.SmuxVer > maxSmuxVer {

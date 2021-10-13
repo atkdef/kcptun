@@ -67,11 +67,11 @@ set_timeout(int sock)
 import "C"
 
 import (
-    "log"
-    "net"
-	"syscall"
 	"github.com/pkg/errors"
-	"github.com/xtaci/kcp-go"
+	kcp "github.com/xtaci/kcp-go/v5"
+	"log"
+	"net"
+	"syscall"
 )
 
 func ControlOnConnSetup(network string, address string, c syscall.RawConn) error {
@@ -127,11 +127,11 @@ type connectedUDPConn struct{ *net.UDPConn }
 func (c *connectedUDPConn) WriteTo(b []byte, addr net.Addr) (int, error) { return c.Write(b) }
 
 func DialKCP(raddr string, block kcp.BlockCrypt, dataShards, parityShards int) (*kcp.UDPSession, error) {
-    if !VpnMode {
-        return kcp.DialWithOptions(raddr, block, dataShards, parityShards)
-    }
+	if !VpnMode {
+		return kcp.DialWithOptions(raddr, block, dataShards, parityShards)
+	}
 
-    d := net.Dialer{Control: ControlOnConnSetup}
+	d := net.Dialer{Control: ControlOnConnSetup}
 	udpconn, err := d.Dial("udp", raddr)
 	if err != nil {
 		return nil, errors.Wrap(err, "net.DialUDP")
