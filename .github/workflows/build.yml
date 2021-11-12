@@ -17,9 +17,10 @@ jobs:
             ~/.cache/go-build
       - run: ./build-release.sh
         name: Run Build
-      - uses: actions/upload-artifact@v2
+      - name: Upload Github Assets
+        uses: softprops/action-gh-release@v1
         with:
-          name: artifact
-          path: |
+          token: ${{ secrets.GITHUB_TOKEN }}
+          files: |
             build/server_*
             build/client_*
