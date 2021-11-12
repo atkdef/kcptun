@@ -296,7 +296,6 @@ func main() {
 
 		opts, err := parseEnv()
 		if err == nil {
-			fmt.Printf("test")
 			if c, b := opts.Get("localaddr"); b {
 				config.LocalAddr = c
 			}
