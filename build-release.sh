@@ -27,6 +27,8 @@ VERSION=`date -u +%Y%m%d`
 LDFLAGS="-X main.VERSION=$VERSION -s -w"
 GCFLAGS=""
 
+go mod vendor
+
 # AMD64 
 OSES=(linux darwin windows freebsd)
 for os in ${OSES[@]}; do
